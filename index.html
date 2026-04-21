@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CykloSafe – Dopravní Výchova</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-brand" onclick="document.getElementById('home').scrollIntoView({behavior:'smooth'})">
+    <span class="nav-icon">🚴</span>
+    <span class="nav-title">CykloSafe</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#home" class="nav-link active">Domů</a></li>
+    <li><a href="#testy" class="nav-link" id="menuTesty">Dopravní testy</a></li>
+    <li><a href="#pravidla" class="nav-link">Pravidla</a></li>
+    <li><a href="#kontakt" class="nav-link">Kontakt</a></li>
+  </ul>
+  <div id="navUser" class="nav-user"></div>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- TOAST -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- HOME SECTION -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="road-line"></div><div class="road-line"></div><div class="road-line"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">Bezpečnost na silnici</div>
+    <h1 class="hero-title">Jezdi bezpečně.<br><span class="accent">Znáš pravidla?</span></h1>
+    <p class="hero-sub">Otestuj své znalosti dopravních předpisů pro cyklisty. 10 testů, 20 otázek každý – značky, křižovatky, přednost.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="scrollToTests()">Začít test 🚦</button>
+      <button class="btn-outline" onclick="document.getElementById('pravidla').scrollIntoView({behavior:'smooth'})">Pravidla</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">10</span><span class="stat-label">Testů</span></div>
+      <div class="stat"><span class="stat-num">20</span><span class="stat-label">Otázek</span></div>
+      <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Zdarma</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="bike-icon">🚴‍♀️</div>
+    <div class="sign-float sign-1">⛔</div>
+    <div class="sign-float sign-2">🚸</div>
+    <div class="sign-float sign-3">⚠️</div>
+    <div class="sign-float sign-4">🛑</div>
+  </div>
+</section>
+
+<!-- TESTS SECTION -->
+<section class="tests-section" id="testy">
+  <div class="section-header">
+    <div class="section-badge">Dopravní testy</div>
+    <h2>Vyber si test</h2>
+    <p>Každý test obsahuje 20 otázek z různých okruhů dopravní výchovy</p>
+  </div>
+  <div class="tests-grid" id="testsGrid"></div>
+</section>
+
+<!-- QUIZ MODAL -->
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-modal">
+    <div class="quiz-header">
+      <div class="quiz-meta">
+        <span class="quiz-title-label" id="quizTitleLabel">Test 1</span>
+        <span class="quiz-progress-text" id="quizProgressText">Otázka 1 / 20</span>
+      </div>
+      <span class="quiz-score-live" id="quizScoreDisplay">✅ 0 / 20</span>
+      <button class="quiz-close" id="quizClose">✕</button>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill"></div></div>
+    <div class="quiz-body" id="quizBody"></div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-modal">
+    <div class="result-icon" id="resultIcon">🏆</div>
+    <h2 class="result-title" id="resultTitle">Výborně!</h2>
+    <p class="result-score" id="resultScore">18 / 20 správně</p>
+    <p class="result-msg" id="resultMsg">Jsi dopravní expert!</p>
+    <div class="result-bar-wrap"><div class="result-bar" id="resultBar"></div></div>
+    <div class="result-btns">
+      <button class="btn-primary" id="retryBtn">Znovu</button>
+      <button class="btn-outline" id="backBtn">Zpět na testy</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-modal">
+    <button class="auth-close" onclick="hideAuthModal()">✕</button>
+    <div class="auth-logo">🚴 <span>CykloSafe</span></div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">Přihlásit se</button>
+      <button class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">Registrace</button>
+    </div>
+    <div id="loginForm">
+      <div class="auth-field">
+        <label>Uživatelské jméno</label>
+        <input type="text" id="loginUsername" placeholder="Tvoje jméno" autocomplete="username" />
+      </div>
+      <div class="auth-field">
+        <label>Heslo</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button class="btn-primary auth-submit" onclick="handleLogin()">Přihlásit se →</button>
+    </div>
+    <div id="registerForm" style="display:none">
+      <div class="auth-field">
+        <label>Uživatelské jméno</label>
+        <input type="text" id="regUsername" placeholder="Min. 3 znaky, jen a-z 0-9 _" autocomplete="username" />
+        <small>Jméno si zarezervuješ – nikdo jiný ho nebude moci použít!</small>
+      </div>
+      <div class="auth-field">
+        <label>Heslo</label>
+        <input type="password" id="regPassword" placeholder="Min. 4 znaky" autocomplete="new-password" />
+      </div>
+      <div class="auth-field">
+        <label>Potvrdit heslo</label>
+        <input type="password" id="regPassword2" placeholder="Zopakuj heslo" autocomplete="new-password" />
+      </div>
+      <button class="btn-primary auth-submit" onclick="handleRegister()">Vytvořit účet 🚀</button>
+    </div>
+    <div id="authMsg" class="auth-msg"></div>
+  </div>
+</div>
+
+<!-- OWNER PANEL -->
+<div class="owner-overlay" id="ownerPanel">
+  <div class="owner-modal">
+    <div class="owner-header">
+      <div>
+        <h2>👑 Owner Panel</h2>
+        <p>Přehled všech registrovaných účtů</p>
+      </div>
+      <button class="auth-close" onclick="hideOwnerPanel()">✕</button>
+    </div>
+    <div class="owner-table-wrap">
+      <table class="owner-table">
+        <thead>
+          <tr><th>Jméno</th><th>Registrace</th><th>Testy</th><th>Nejlepší skóre</th><th>Nápovědy</th><th>Akce</th></tr>
+        </thead>
+        <tbody id="ownerTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE PANEL -->
+<div class="profile-overlay" id="profilePanel">
+  <div class="profile-modal">
+    <button class="auth-close" onclick="hideProfilePanel()">✕</button>
+    <div class="profile-avatar">🚴</div>
+    <h2 id="profileName" class="profile-name">Hráč</h2>
+    <div id="profileStats" class="profile-stats"></div>
+    <button class="btn-outline" style="margin-top:1.5rem;width:100%;font-family:'Outfit',sans-serif;font-size:.9rem;cursor:pointer" onclick="hideProfilePanel();logout()">Odhlásit se</button>
+  </div>
+</div>
+
+<!-- MINIGAME OVERLAY -->
+<div class="mg-overlay" id="mgOverlay">
+  <div class="mg-modal">
+    <div class="mg-header">
+      <div>
+        <h2>🚦 Minihra – Projet křižovatkou</h2>
+        <p>Dojeď do cíle (žluté pole nahoře) bez srážky s auty a získej nápovědu!</p>
+      </div>
+      <button class="auth-close" onclick="hideMiniGame()">✕</button>
+    </div>
+    <canvas id="mgCanvas" width="480" height="480" style="border-radius:12px;max-width:100%;display:block;margin:0 auto"></canvas>
+    <div id="mgResult" class="mg-result" style="display:none"></div>
+    <div class="mg-touch-controls">
+      <div class="mg-row"><button class="mg-btn" onpointerdown="MG.touches.up=true" onpointerup="MG.touches.up=false" onpointerleave="MG.touches.up=false">▲</button></div>
+      <div class="mg-row">
+        <button class="mg-btn" onpointerdown="MG.touches.left=true" onpointerup="MG.touches.left=false" onpointerleave="MG.touches.left=false">◀</button>
+        <button class="mg-btn" onpointerdown="MG.touches.down=true" onpointerup="MG.touches.down=false" onpointerleave="MG.touches.down=false">▼</button>
+        <button class="mg-btn" onpointerdown="MG.touches.right=true" onpointerup="MG.touches.right=false" onpointerleave="MG.touches.right=false">▶</button>
+      </div>
+    </div>
+    <div class="mg-actions">
+      <button class="btn-outline" id="mgRestartBtn" style="display:none;font-family:'Outfit',sans-serif;cursor:pointer" onclick="document.getElementById('mgResult').style.display='none';mgStart(MG.onWin)">🔄 Zkusit znovu</button>
+      <button class="btn-primary" id="mgClaimBtn" style="display:none" onclick="mgClaim()">🎁 Vzít nápovědu!</button>
+    </div>
+  </div>
+</div>
+
+<!-- RULES SECTION -->
+<section class="rules-section" id="pravidla">
+  <div class="section-header">
+    <div class="section-badge">Základní pravidla</div>
+    <h2>Co musí cyklista znát</h2>
+  </div>
+  <div class="rules-grid">
+    <div class="rule-card"><div class="rule-icon">🪖</div><h3>Helma</h3><p>Děti do 18 let mají povinnost nosit schválenou cyklistickou přilbu.</p></div>
+    <div class="rule-card"><div class="rule-icon">💡</div><h3>Osvětlení</h3><p>Za snížené viditelnosti musí mít cyklista bílé světlo vpředu a červené vzadu.</p></div>
+    <div class="rule-card"><div class="rule-icon">🛣️</div><h3>Jízdní pruh</h3><p>Cyklista jede co nejblíže pravému okraji vozovky, pokud není cyklopruh.</p></div>
+    <div class="rule-card"><div class="rule-icon">🤚</div><h3>Znamení rukou</h3><p>Odbočení vlevo – levá ruka vodorovně. Odbočení vpravo – pravá ruka vodorovně.</p></div>
+    <div class="rule-card"><div class="rule-icon">📵</div><h3>Telefon</h3><p>Používání telefonu bez hands-free při jízdě na kole je zakázáno.</p></div>
+    <div class="rule-card"><div class="rule-icon">🔔</div><h3>Zvonec</h3><p>Každý jízdní kolo musí být vybaveno funkčním zvoncem nebo jiným zvukovým zařízením.</p></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" id="kontakt">
+  <div class="footer-inner">
+    <div class="footer-brand"><span class="nav-icon">🚴</span><span class="nav-title">CykloSafe</span></div>
+    <p class="footer-sub">Bezpečná jízda začíná znalostí pravidel.</p>
+    <p class="footer-copy">© 2025 CykloSafe – Vzdělávací projekt dopravní výchovy</p>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+<script src="minigame.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
